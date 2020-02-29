@@ -4,11 +4,11 @@ module HW05 where
 
 Name: 
 
-<put your name here>
+Jonah Rubin
 
 Collaboration Statement:
 
-<put your collaboration statement here>
+Talked with Josh Childs and Chris Deluca about the structure of the LetE and CallE case of E3
 
 Collaboration on high-level ideas and approach on assignments is
 encouraged. Copying someone else's work is not allowed. Copying solutions
@@ -125,9 +125,12 @@ testX3 = TestDir
 -- Write a function that interprets many commands at once. Commands transform
 -- an incoming function environment and add a new entry into the outgoing
 -- function environment. See test cases for expected functionality.
+-- use X2 (interpCommand)
 
 interpCommandMany :: L4.FEnv -> [L4.Command] -> L4.FEnv
-interpCommandMany fenv cs = error "TODO"
+interpCommandMany fenv cs = case cs of
+  [] -> fenv
+  c:cs' -> interpCommandMany (interpCommand fenv c) cs'
 
 testE1 :: Test
 testE1 = TestDir
@@ -145,9 +148,13 @@ testE1 = TestDir
 -- Write a function that extends a standard environment to map a list of names
 -- to a list of values. If the number of names is different from the number of
 -- values, this should fail by returning `Nothing`.
+-- see E3
 
 extendEnvMany :: [String] -> [L4.Value] -> L4.Env -> Maybe L4.Env
-extendEnvMany xs vs env = error "TODO"
+extendEnvMany xs vs env = case (xs, vs) of
+  (x:xs', v:vs') -> extendEnvMany xs' vs' (Map.insert x v (env))
+  ([], []) -> Just env
+  (_, _) -> Nothing
 
 testE2 :: Test
 testE2 = TestDir
@@ -181,7 +188,37 @@ testE2 = TestDir
 -- implement `interpExpr`.
 
 interpExpr :: L4.FEnv -> L4.Env -> L4.Expr -> L4.Answer
-interpExpr fenv env e = error "TODO"
+interpExpr fenv env e = case e of
+  L4.IntE i -> L4.ValueA (L4.IntV i)
+  L4.PlusE e1 e2 -> case (interpExpr fenv env e1,interpExpr fenv env e2) of
+    (L4.ValueA (L4.IntV i1),L4.ValueA (L4.IntV i2)) -> L4.ValueA (L4.IntV (i1 + i2))
+    _ -> L4.BadA
+  L4.TimesE e1 e2 -> case (interpExpr fenv env e1,interpExpr fenv env e2) of
+    (L4.ValueA (L4.IntV i1),L4.ValueA (L4.IntV i2)) -> L4.ValueA (L4.IntV (i1 * i2))
+    _ -> L4.BadA
+  L4.BoolE b -> L4.ValueA (L4.BoolV b)
+  L4.IfE e1 e2 e3 -> case interpExpr fenv env e1 of
+    L4.ValueA (L4.BoolV b) ->
+      if b 
+      then interpExpr fenv env e2
+      else interpExpr fenv env e3
+    _ -> L4.BadA
+  L4.VarE x -> case Map.lookup x env of
+    Nothing -> L4.BadA
+    Just a -> L4.ValueA a
+  L4.LetE s e1 e2 -> case (interpExpr fenv env e1) of
+    L4.ValueA v -> interpExpr fenv (Map.insert s v env) e2
+    _ -> L4.BadA
+
+  L4.CallE s e -> case (interpExprMany fenv env e) of
+    Nothing -> L4.BadA
+    Just [vs] -> case Map.lookup s fenv of
+      Nothing -> L4.BadA
+      Just ([s], e) -> case extendEnvMany [s] [vs] Map.empty of
+       Just m -> interpExpr fenv m e
+       Nothing -> L4.BadA
+
+  _ -> undefined
 
 interpExprMany :: L4.FEnv -> L4.Env -> [L4.Expr] -> Maybe [L4.Value]
 interpExprMany fenv env es = case es of
