@@ -6,7 +6,7 @@
 
     Update of interpreter from hw05 -> src/FP
 
-# Example Program Sketches
+# Example Program Sketches (including given)
 
     let p = (1+1, 2+2) in
     fst p * fst p + snd p
