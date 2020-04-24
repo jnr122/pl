@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0bedd8b3e30b4f1d69c42ebbde8c292a76a0f17a46abd4c4d632d45fd8688f15
+-- hash: d71ce7346399820f1e276de0d1e4eb527b74660d551f6f1db3658472adaded7d
 
 name:           cs225-hw
 version:        1.0
@@ -16,14 +16,6 @@ library
       Lang.L4
       Lang.L4.Data
       Lang.L4.Util
-      Lang.L5.Data
-      Lang.L5.Util
-      Lang.L6.Data
-      Lang.L6.Util
-      Lang.L7.Data
-      Lang.L7.Util
-      Lang.L8.Data
-      Lang.L8.Util
       Lang.Trees
       Lang.Trees.Data
       Lang.Trees.Util
