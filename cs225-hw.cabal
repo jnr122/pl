@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b4879584d727a41f6f286b3f91c2aada25e7be693a70c54bf4120e5345b4d00b
+-- hash: 45c2155df63bd1500dfc1764ae33e1b76bd68f217e08709eee6660deb1669997
 
 name:           cs225-hw
 version:        1.0
@@ -12,20 +12,52 @@ build-type:     Simple
 
 library
   exposed-modules:
-      HW01
-      HW02
+      FP
+      Lang.L1.Data
+      Lang.L1.Util
+      Lang.L1M.Data
+      Lang.L1M.Util
+      Lang.L1MN.Data
+      Lang.L1MN.Util
+      Lang.L2
+      Lang.L2.Data
+      Lang.L2.Util
+      Lang.L2C
+      Lang.L2C.Data
+      Lang.L2C.Util
+      Lang.L3
+      Lang.L3.Data
+      Lang.L3.Util
+      Lang.L4
+      Lang.L4.Data
+      Lang.L4.Util
+      Lang.L5
+      Lang.L5.Data
+      Lang.L5.Util
+      Lang.L6
+      Lang.L6.Data
+      Lang.L6.Util
+      Lang.L7
+      Lang.L7.Data
+      Lang.L7.Util
+      Lang.L8
+      Lang.L8.Data
+      Lang.L8.Util
       Lang.Trees
       Lang.Trees.Data
       Lang.Trees.Util
+      Util.Lex
       Util.Testing
   other-modules:
       Paths_cs225_hw
   hs-source-dirs:
       src
   default-extensions: ScopedTypeVariables
-  ghc-options: -Wall -Wno-orphans -Wno-partial-type-signatures -j
+  ghc-options: -W -Wno-orphans -Wno-partial-type-signatures -Wno-unused-imports -Werror=incomplete-patterns -j
   build-depends:
       base
+    , containers
+    , deepseq
     , directory
     , template-haskell
     , text

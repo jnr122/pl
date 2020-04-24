@@ -36,6 +36,7 @@ data Value =
   
   deriving (Eq,Ord,Show)
 
+
 data Answer = 
     ValueA Value
   | BadA
