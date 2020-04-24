@@ -6,7 +6,7 @@
 
     Update of interpreter from hw05 -> src/FP
 
-# Example Sketch
+# Example Program Sketches
 
-   Update of test cases for hw05 -> in tests/hw05
+    Update of test cases from hw05 -> tests/hw05
 
