@@ -1,27 +1,12 @@
-# Running Files
+# Datatype Sketches 
 
-    make hw01
-    make hw02
-    ...(etc)
+    Updates to L4 in src/Lang/L4
 
-# Running ghcid on Files
+# Interpreter Sketch
 
-    make hw01-dev
-    make hw02-dev
-    ...(etc)
+    Update of interpreter from hw05 -> src/FP
 
-# Observing Parser Output
+# Example Sketch
 
-    make pl1 E="1 + 2"
-    cat <file> | make pl1
+   Update of test cases for hw05 -> in tests/hw05
 
-    make pl2 E="1 + 2 == 3"
-    cat <file> | make pl2
-
-# Debugging
-
-If any of these makefile hooks aren't working, try:
-
-    stack build
-
-and make sure it completes successfully first.
