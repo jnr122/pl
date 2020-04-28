@@ -87,8 +87,20 @@ interpExpr fenv env e = case e of
     Nothing -> L4.BadA
 
   -- NEW
-  L4.PairE e1 e2 -> error "TODO"
-  L4.TagUnE e1 e2 -> error "TODO"
+
+  L4.PairE f s -> L4.BadA
+  L4.Fst e -> L4.BadA
+  L4.Snd e -> L4.BadA
+  L4.Left e -> L4.BadA
+  L4.Right e -> L4.BadA
+
+
+  {-
+  L4.PairE e1 e2 -> case (interpExpr fenv env e1, interpExpr fenv env e2) of
+    (L4.ValueA v1, L4.ValueA v2) -> L4.ValueA (L4.PairV v1 v2)
+    _ -> L4.BadA
+  -}
+  L4.TagUnE e x1 x2 -> error "TODO"
 
 interpExprMany :: L4.FEnv -> L4.Env -> [L4.Expr] -> Maybe [L4.Value]
 interpExprMany fenv env es = case es of

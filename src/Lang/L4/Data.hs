@@ -1,19 +1,6 @@
 module Lang.L4.Data where
 
 import Data.Map (Map)
-
--- NEW
-data Pair =
-    FstE Expr
-  | SndE Expr
-  | FstV Value
-  | SndV Value
-
-data TagUn =
-    LeftE Expr
-  | RightE Expr
-  | LeftV Value
-  | RIghtV Value
   
 data Expr = 
     IntE Integer
@@ -27,8 +14,22 @@ data Expr =
 
   -- NEW
   | PairE Expr Expr
-  | TagUnE Expr Expr
+  | Fst Expr
+  | Snd Expr
+  | TagUnE Expr Expr Expr
+  | Left Expr
+  | Right Expr
   deriving (Eq,Ord,Show)
+
+{-
+-- NEW
+data Pair =
+    FstE PairE
+  | SndE PairE
+  | FstV PairV
+  | SndV PairV
+-}
+
 
 data Command =
     DefC String [String] Expr
@@ -44,7 +45,8 @@ data Value =
 
   -- NEW
   | PairV Value Value
-  | TagUnV Value Value
+  | LeftV Value
+  | RIghtV Value
   
   deriving (Eq,Ord,Show)
 
