@@ -14,22 +14,12 @@ data Expr =
 
   -- NEW
   | PairE Expr Expr
-  | Fst Expr
-  | Snd Expr
-  | TagUnE Expr Expr Expr
-  | Left Expr
-  | Right Expr
+  | FstE Expr
+  | SndE Expr
+  | TagUnE Expr Expr Expr String String
+  | LeftE Expr
+  | RightE Expr
   deriving (Eq,Ord,Show)
-
-{-
--- NEW
-data Pair =
-    FstE PairE
-  | SndE PairE
-  | FstV PairV
-  | SndV PairV
--}
-
 
 data Command =
     DefC String [String] Expr
@@ -46,7 +36,7 @@ data Value =
   -- NEW
   | PairV Value Value
   | LeftV Value
-  | RIghtV Value
+  | RightV Value
   
   deriving (Eq,Ord,Show)
 

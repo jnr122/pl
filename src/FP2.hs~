@@ -88,28 +88,19 @@ interpExpr fenv env e = case e of
 
   -- NEW
 
-  --Pairs
-  L4.FstE e -> case interpExpr fenv env e of
-    L4.ValueA (L4.PairV v1 v2) -> L4.ValueA v1
-    _ -> L4.BadA
-  L4.SndE e -> case interpExpr fenv env e of
-    L4.ValueA (L4.PairV v1 v2) -> L4.ValueA v2
-    _ -> L4.BadA
+  L4.PairE f s -> L4.BadA
+  L4.Fst e -> L4.BadA
+  L4.Snd e -> L4.BadA
+  L4.Left e -> L4.BadA
+  L4.Right e -> L4.BadA
+
+
+  {-
   L4.PairE e1 e2 -> case (interpExpr fenv env e1, interpExpr fenv env e2) of
     (L4.ValueA v1, L4.ValueA v2) -> L4.ValueA (L4.PairV v1 v2)
     _ -> L4.BadA
-
-  --Tagged Unions
-  L4.LeftE e -> case interpExpr fenv env e of
-    L4.ValueA v -> L4.ValueA (L4.LeftV v)
-    _ -> L4.BadA
-  L4.RightE e -> case interpExpr fenv env e of
-    L4.ValueA v -> L4.ValueA (L4.RightV v)
-    _ -> L4.BadA
-  L4.TagUnE e1 e2 e3 x1 x2 -> case interpExpr fenv env e1 of
-    L4.ValueA (L4.LeftV v)  -> interpExpr fenv (Map.insert x1 v env) e2
-    L4.ValueA (L4.RightV v) -> interpExpr fenv (Map.insert x2 v env) e3
-    _ -> L4.BadA
+  -}
+  L4.TagUnE e x1 x2 -> error "TODO"
 
 interpExprMany :: L4.FEnv -> L4.Env -> [L4.Expr] -> Maybe [L4.Value]
 interpExprMany fenv env es = case es of
