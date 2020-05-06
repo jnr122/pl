@@ -107,10 +107,7 @@ typeCheck env e = case e of
   L5.LetE s e1 e2 -> case typeCheck env e1 of
     Just (t1) -> (typeCheck (Map.insert s t1 env) e2)
     _ -> Nothing
-    --where t2 = Nothing
-    --where t2 = typeCheck (Map.insert s (typeCheck env e1) env) e2
-          
-    
+         
   _ -> Nothing
 
 

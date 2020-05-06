@@ -21,10 +21,25 @@ data Expr =
   | PairE Expr Expr
   | FstE Expr
   | SndE Expr
-  | CallE Expr String Expr String Expr
+  | CaseE Expr String Expr String Expr
   | LeftE Expr
   | RightE Expr
   deriving (Eq,Ord,Show)
+
+
+-----------
+-- TYPES --
+-----------
+
+data Type =
+    IntT
+  | BoolT
+  | FunT Type Type
+  | PairT Type Type
+  | TUnionT Type Type
+  | StringT
+  deriving (Eq,Ord,Show)
+
 
 ---------------------------
 -- ENVIRONMENT SEMANTICS --
@@ -47,6 +62,7 @@ data AnswerE =
   deriving (Eq,Ord,Show)
 
 type EnvE = Map String ValueE
+type EnvT = Map String Type
 
 ----------------------------
 -- SUBSTITUTION SEMANTICS --
