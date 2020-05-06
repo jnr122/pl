@@ -24,6 +24,7 @@ data Expr =
   | CaseE Expr String Expr String Expr
   | LeftE Expr
   | RightE Expr
+  | StringE String
   deriving (Eq,Ord,Show)
 
 
@@ -54,6 +55,7 @@ data ValueE =
   | PairEV ValueE ValueE
   | LeftEV ValueE
   | RightEV ValueE
+  | StringEV String
   deriving (Eq,Ord,Show)
 
 data AnswerE = 

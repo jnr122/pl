@@ -17,8 +17,10 @@ import Lang.Mega as LM
 import Control.Monad
 
 -----------------
--- Translator --
+-- Translators --
 -----------------
+
+-- Expr
 translateE :: LM.Expr -> L5.Expr
 translateE e = case e of
   LM.IntE i -> L5.IntE i
@@ -30,7 +32,6 @@ translateE e = case e of
   LM.LetE s e1 e2 -> L5.LetE s (translateE e1) (translateE e2)
   LM.FunE s t e -> L5.FunE s (translateE e)
   LM.AppE e1 e2 -> L5.AppE (translateE e1) (translateE e2)
-
   --NEW
   LM.PairE e1 e2 -> L5.PairE (translateE e1) (translateE e2)
   LM.FstE e -> L5.FstE (translateE e)
@@ -38,8 +39,19 @@ translateE e = case e of
   LM.CaseE e1 s1 e2 s2 e3-> L5.CaseE (translateE e1) s1 (translateE e2) s2 (translateE e3)
   LM.LeftE t e -> L5.LeftE (translateE e)
   LM.RightE t e -> L5.RightE (translateE e)
-  
-  _ -> error "Not Implemented"
+  LM.StringE s -> L5.StringE s
+  _ -> error "not implemented"
+
+-- Type
+translateT ::  LM.Type -> L5.Type
+translateT t = case t of
+  LM.IntT -> L5.IntT 
+  LM.BoolT -> L5.IntT
+  LM.StringT -> L5.StringT
+  LM.FunT t1 t2 -> L5.FunT (translateT t1) (translateT t2)
+  LM.PairT t1 t2 -> L5.PairT (translateT t1) (translateT t2)
+  LM.TUnionT t1 t2 -> L5.TUnionT (translateT t1) (translateT t2)
+  _ -> error "not implemented"
 
 -----------------
 -- Interpreter --
@@ -47,6 +59,7 @@ translateE e = case e of
 interpWithEnv :: L5.EnvE -> L5.Expr -> L5.AnswerE
 interpWithEnv env e = case e of
   L5.IntE i -> L5.ValueEA (L5.IntEV i)
+  L5.StringE x -> L5.ValueEA (L5.StringEV x)
   L5.PlusE e1 e2 -> case (interpWithEnv env e1, interpWithEnv env e2) of
     (L5.ValueEA (L5.IntEV i1), L5.ValueEA (L5.IntEV i2)) -> L5.ValueEA (L5.IntEV (i1 + i2))
     _ -> L5.BadEA
@@ -99,18 +112,18 @@ interpWithEnv env e = case e of
 typeCheck :: L5.EnvT -> L5.Expr -> Maybe (L5.Type)
 typeCheck env e = case e of
   L5.IntE i -> Just (L5.IntT)
-  
-  L5.PlusE e1 e2 -> Nothing
-
+  L5.PlusE e1 e2 -> case (typeCheck env e1, typeCheck env e2) of
+    (Just (L5.IntT), Just (L5.IntT)) -> Just (L5.IntT)
+    (_,_) -> Nothing
   L5.BoolE b -> Just (L5.BoolT)
-
+  L5.StringE x -> (Map.lookup x env)
+  L5.IfE b e1 e2 -> case typeCheck env b of
+    Just (L5.BoolT) -> Nothing
+    
   L5.LetE s e1 e2 -> case typeCheck env e1 of
     Just (t1) -> (typeCheck (Map.insert s t1 env) e2)
     _ -> Nothing
-    --where t2 = Nothing
-    --where t2 = typeCheck (Map.insert s (typeCheck env e1) env) e2
-          
-    
+         
   _ -> Nothing
 
 
