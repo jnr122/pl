@@ -1,7 +1,7 @@
 module Lang.L4.Data where
 
 import Data.Map (Map)
-
+  
 data Expr = 
     IntE Integer
   | PlusE Expr Expr 
@@ -10,16 +10,21 @@ data Expr =
   | IfE Expr Expr Expr
   | VarE String
   | LetE String Expr Expr
-  -- NEW
   | CallE String [Expr]
+
+  -- NEW
+  | PairE Expr Expr
+  | FstE Expr
+  | SndE Expr
+  | TagUnE Expr Expr Expr String String
+  | LeftE Expr
+  | RightE Expr
   deriving (Eq,Ord,Show)
 
--- NEW
 data Command =
     DefC String [String] Expr
   deriving (Eq,Ord,Show)
 
--- NEW
 data Program =
     Program [Command] Expr
   deriving (Eq,Ord,Show)
@@ -27,6 +32,12 @@ data Program =
 data Value = 
     IntV Integer
   | BoolV Bool
+
+  -- NEW
+  | PairV Value Value
+  | LeftV Value
+  | RightV Value
+  
   deriving (Eq,Ord,Show)
 
 data Answer = 
@@ -35,6 +46,4 @@ data Answer =
   deriving (Eq,Ord,Show)
 
 type Env = Map String Value
-
--- NEW
 type FEnv = Map String ([String],Expr)

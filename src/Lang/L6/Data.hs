@@ -16,28 +16,51 @@ data Expr =
   | LetE String Expr Expr
   | FunE String Expr
   | AppE Expr Expr
+
   -- NEW
-  | BoxE Expr
-  | UnboxE Expr
-  | AssignE Expr Expr
+  | PairE Expr Expr
+  | FstE Expr
+  | SndE Expr
+  | TagUnE Expr Expr Expr String String
+  | LeftE Expr
+  | RightE Expr
   deriving (Eq,Ord,Show)
 
----------------
--- SEMANTICS --
----------------
+---------------------------
+-- ENVIRONMENT SEMANTICS --
+---------------------------
 
-data Value = 
-    IntV Integer
-  | BoolV Bool
-  | CloV String Expr Env
+data ValueE = 
+    IntEV Integer
+  | BoolEV Bool
+  | CloEV String Expr EnvE
+
   -- NEW
-  | LocV Integer
+  | PairEV Value Value
+  | LeftEV Value
+  | RightEV Value
   deriving (Eq,Ord,Show)
 
--- NEW
-type Answer = Maybe (Store, Value)
+data AnswerE = 
+    ValueEA ValueE
+  | BadEA
+  deriving (Eq,Ord,Show)
 
-type Env = Map String Value
+type EnvE = Map String ValueE
 
--- NEW
-type Store = Map Integer Value
+----------------------------
+-- SUBSTITUTION SEMANTICS --
+----------------------------
+
+data ValueS =
+    IntSV Integer
+  | BoolSV Bool
+  | FunSV String Expr
+  deriving (Eq,Ord,Show)
+
+data AnswerS =
+    ValueSA ValueS
+  | BadSA
+  deriving (Eq,Ord,Show)
+
+type EnvS = Map String ValueS

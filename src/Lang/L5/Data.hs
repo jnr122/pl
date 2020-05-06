@@ -14,9 +14,16 @@ data Expr =
   | IfE Expr Expr Expr
   | VarE String
   | LetE String Expr Expr
-  -- NEW
   | FunE String Expr
   | AppE Expr Expr
+
+  -- NEW
+  | PairE Expr Expr
+  | FstE Expr
+  | SndE Expr
+  | TagUnE Expr Expr Expr String String
+  | LeftE Expr
+  | RightE Expr
   deriving (Eq,Ord,Show)
 
 ---------------------------
@@ -26,8 +33,12 @@ data Expr =
 data ValueE = 
     IntEV Integer
   | BoolEV Bool
-  -- NEW
   | CloEV String Expr EnvE
+
+  -- NEW
+  | PairEV Value Value
+  | LeftEV Value
+  | RightEV Value
   deriving (Eq,Ord,Show)
 
 data AnswerE = 

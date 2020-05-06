@@ -373,7 +373,6 @@ interpWithEnv env e = case e of
     (L5.ValueEA (L5.CloEV x e' env'), L5.ValueEA v) -> interpWithEnv (Map.insert x v env') e'
     _ -> L5.BadEA
 
-  
 
 testE3 :: Test
 testE3 = TestDir
