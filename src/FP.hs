@@ -119,6 +119,7 @@ typeCheck env e = case e of
   L5.StringE x -> (Map.lookup x env)
   L5.IfE b e1 e2 -> case typeCheck env b of
     Just (L5.BoolT) -> Nothing
+    _ -> Nothing
     
   L5.LetE s e1 e2 -> case typeCheck env e1 of
     Just (t1) -> (typeCheck (Map.insert s t1 env) e2)
@@ -146,6 +147,12 @@ test2 = Test1
       -- expeced output
       , [lme| let p = (1,2) in fst p |]
       )
+    ,
+      ( [lme| let x = 1 in x |] 
+      -- expeced output
+      , [lme| let x = 1 in x |]
+      )
+      
     ]
   )
 
@@ -155,7 +162,7 @@ testE3 = TestDir
   ( "E3"
   , "interpWithEnv"
   , interpWithEnv Map.empty
-  , "tests/fp"
+  , "tests/hw06/e3"
   , parseTest L5.pExpr L5.pAnswerE
   )
 
@@ -164,6 +171,7 @@ main = do
   putStrLn "TESTS"
   runTests 
     [
+
       test2
     , testE3
     ]
