@@ -1,10 +1,10 @@
 TEST
 
-def f(x) = x + y
-do
-let y = 5
-in f(1)
+let x = 5 in
+let f = fun x => let x = x + 1 in
+                 fun y => x + y in
+f 2
 
 EXPECTED
 
-bad
+(fun y => x + y ; { x = 3 })

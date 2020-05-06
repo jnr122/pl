@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 767c8b66d1db57ceb6ebed75d2a4976188ca683853acfcba3834c404ec5568a4
+-- hash: ae3c6c782990c61c9c11395a31751d0f34bc4d2397342a8f0d8d664c030543f6
 
 name:           cs225-hw
 version:        1.0
@@ -13,48 +13,9 @@ build-type:     Simple
 library
   exposed-modules:
       FP
-      HW01
-      HW02
-      HW03
-      HW04
-      HW05
-      HW06
-      HW07
-      HW08
-      HW09
-      Lang.L1
-      Lang.L1.Data
-      Lang.L1.Util
-      Lang.L1M
-      Lang.L1M.Data
-      Lang.L1M.Util
-      Lang.L1MN
-      Lang.L1MN.Data
-      Lang.L1MN.Util
-      Lang.L2
-      Lang.L2.Data
-      Lang.L2.Util
-      Lang.L2C
-      Lang.L2C.Data
-      Lang.L2C.Util
-      Lang.L3
-      Lang.L3.Data
-      Lang.L3.Util
-      Lang.L4
-      Lang.L4.Data
-      Lang.L4.Util
       Lang.L5
       Lang.L5.Data
       Lang.L5.Util
-      Lang.L6
-      Lang.L6.Data
-      Lang.L6.Util
-      Lang.L7
-      Lang.L7.Data
-      Lang.L7.Util
-      Lang.L8
-      Lang.L8.Data
-      Lang.L8.Util
       Lang.Mega
       Lang.Mega.Data
       Lang.Mega.Util

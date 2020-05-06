@@ -1,11 +1,10 @@
 TEST
 
-def f(x) = g(x)
-def g(x) = if x then 100 else g(true)
-do
-f(false)
+let x = 2 in 
+let y = 3 in
+let f = fun x => fun y => x + y in 
+f 4 5
 
 EXPECTED
 
-100
-
+9

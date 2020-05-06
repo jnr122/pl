@@ -1,9 +1,9 @@
 TEST
 
-def f(x, y) = x + y
-do
-f(2 + 1 + 2, 10)
+let y = 1 in
+let f = fun x => x + y in
+f
 
 EXPECTED
 
-15
+(fun x => x + y ; { y = 1 })

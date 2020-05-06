@@ -1,11 +1,9 @@
 TEST
 
-def f(x, y) = let z = x * y in z + 1
-do
-let a = 10 in
-let b = 5 in
-f(a, b)
+let f = fun x => x + 1 in
+let g = f in
+g 1
 
 EXPECTED
 
-51
+2

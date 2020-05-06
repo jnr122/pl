@@ -1,9 +1,9 @@
 TEST
 
-def f(x) = x + 1
-do
-f(10)
+let f = fun x => fun y => 2 + y in 
+let g = f 3 in
+g 2
 
 EXPECTED
 
-11
+4

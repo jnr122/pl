@@ -21,7 +21,7 @@ data Expr =
   | PairE Expr Expr
   | FstE Expr
   | SndE Expr
-  | CallE Expr String Expr String Expr
+  | TagUnE Expr Expr Expr String String
   | LeftE Expr
   | RightE Expr
   deriving (Eq,Ord,Show)
@@ -36,9 +36,9 @@ data ValueE =
   | CloEV String Expr EnvE
 
   -- NEW
-  | PairEV ValueE ValueE
-  | LeftEV ValueE
-  | RightEV ValueE
+  | PairEV Value Value
+  | LeftEV Value
+  | RightEV Value
   deriving (Eq,Ord,Show)
 
 data AnswerE = 

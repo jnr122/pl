@@ -1,9 +1,9 @@
 TEST
 
-def f() = 1 + 4
-do
-f()
+let f = fun x => x + y in 
+let y = 2 in
+f 3
 
 EXPECTED
 
-5
+bad
