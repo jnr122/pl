@@ -53,6 +53,24 @@ translateT t = case t of
   LM.TUnionT t1 t2 -> L5.TUnionT (translateT t1) (translateT t2)
   _ -> error "not implemented"
 
+--Value
+translateV :: LM.Value -> L5.ValueE
+translateV v = case v of
+  LM.IntV i -> L5.IntEV i
+  LM.BoolV b -> L5.BoolEV b
+  LM.StringV s -> L5.StringEV s
+  LM.PairV p1 p2  -> L5.PairEV (translateV p1) (translateV p2)
+  LM.LeftV l -> L5.LeftEV (translateV l)
+  LM.RightV r -> L5.RightEV (translateV r)
+  _ -> error "not implement"
+
+--Answer
+translateA :: LM.Answer -> L5.AnswerE
+translateA a = case a of
+  LM.SuccessA s v -> L5.ValueEA (translateV v)
+  LM.BadA -> L5.BadEA
+  _ -> error "not implemented"
+
 -----------------
 -- Interpreter --
 -----------------
@@ -137,27 +155,27 @@ test1 = TestDir
   , parseTest LM.pExpr LM.pExpr
   )
 
-{-
+
 test2 :: Test
 test2 = Test1
   ( "T2"
   , "identity function"
-  , id--interpWithEnv Map.empty
+  , interpWithEnv Map.empty
   , [ -- test input
-      ( [lme| let p = (1,2) in fst p |] 
+      ( translateE([lme| let p = (1,2) in fst p |])
       -- expeced output
-      , [lma| <success> {} , 1 |]
+      , translateA([lma| <success> {} , 1 |])
       )
     ,
-      ( [lme| let x = 1 in x |] 
+      ( translateE([lme| let x = 1 in x |])
       -- expeced output
-      , [lma| <success> {} , 1 |]
+      , translateA([lma| <success> {} , 1 |])
       )  
     ]
   )
 
 
-
+{-
     
 testE3 :: Test
 testE3 = TestDir
@@ -174,10 +192,10 @@ main = do
   runTests 
     [
 
-   --   test2
+       test2
    -- , testE3
     ]
   putStrLn "EXAMPLE"
-  putStrLn (show [lme| let p = (1,2) in fst p |])
-  putStrLn (show [lma| <success> { loc 2 = 4 } , 1 |])
+  putStrLn (show (translateE [lme| let p = (1,2) in fst p |]))
+  putStrLn (show (translateA [lma| <success> {} , 1 |]))
 
