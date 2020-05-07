@@ -137,43 +137,47 @@ test1 = TestDir
   , parseTest LM.pExpr LM.pExpr
   )
 
+{-
 test2 :: Test
 test2 = Test1
   ( "T2"
   , "identity function"
-  , id
+  , id--interpWithEnv Map.empty
   , [ -- test input
       ( [lme| let p = (1,2) in fst p |] 
       -- expeced output
-      , [lme| let p = (1,2) in fst p |]
+      , [lma| <success> {} , 1 |]
       )
     ,
       ( [lme| let x = 1 in x |] 
       -- expeced output
-      , [lme| let x = 1 in x |]
-      )
-      
+      , [lma| <success> {} , 1 |]
+      )  
     ]
   )
+
+
 
     
 testE3 :: Test
 testE3 = TestDir
   ( "E3"
   , "interpWithEnv"
-  , interpWithEnv Map.empty
+  , id--interpWithEnv Map.empty
   , "tests/hw06/e3"
-  , parseTest L5.pExpr L5.pAnswerE
+  , parseTest LM.pExpr LM.pAnswer
   )
-
+-}
 main :: IO ()
 main = do
   putStrLn "TESTS"
   runTests 
     [
 
-      test2
-    , testE3
+   --   test2
+   -- , testE3
     ]
   putStrLn "EXAMPLE"
   putStrLn (show [lme| let p = (1,2) in fst p |])
+  putStrLn (show [lma| <success> { loc 2 = 4 } , 1 |])
+

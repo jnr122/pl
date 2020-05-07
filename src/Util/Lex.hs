@@ -1,3 +1,4 @@
+  
 {-# LANGUAGE 
     ConstraintKinds
    ,DataKinds
@@ -62,6 +63,7 @@ lexer = lexerBasic puns kws prim ops
       , "exe"
       , "class","fields","method","end","new","object"
       , "fst","snd","left","right","case","while","do","throw","try","catch"
+      , "<success>","<error>","<bad>"
       ]
     prim = list ["true","false","bad","loc","_|_","int","bool"]
     ops = list ["+","-","*","/","<?",">?","<=?",">=?","=?","/=?","||","&&"]
