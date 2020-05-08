@@ -171,11 +171,7 @@ typeCheck env e = case e of
     _ -> Nothing
 
 
-{- 
-  L5.FunE x e -> case (typeCheck env x, typeCheck env e) of
-    (Just t1, Just t2) -> Just (L5.FunT t1 t2)
-    _ -> Nothing
-    -}
+  L5.FunE x e    -> Nothing
   L5.AppE e1 e2  -> Nothing
 
   -- Pairs
@@ -190,8 +186,14 @@ typeCheck env e = case e of
     _ -> Nothing
   _ -> Nothing
 
-test2 :: Test
-test2 = Test1
+
+-------------
+-- Testing --
+-------------
+
+--interp
+test1 :: Test
+test1 = Test1
   ( "T1"
   , "Interp Tester"
   , interpWithEnv Map.empty
@@ -222,8 +224,6 @@ test2 = Test1
       -- expeced output
       , translateA([lma| <success> {} , 18 |])
       )
-
-    
        ,
       ( translateE([lme| let p =
                        (
@@ -241,10 +241,9 @@ test2 = Test1
     ]
   )
 
-
-
-test4 :: Test
-test4 = Test1
+-- type checker
+test2 :: Test
+test2 = Test1
   ( "T2"
   , "Type Check Tester"
   , typeCheck Map.empty
@@ -268,6 +267,14 @@ test4 = Test1
       ,
       (translateMT(Just [lmt| int |]))
       )
+    ,
+      (translateE([lme| let x = case left 4 {left x => x * x} {right x => if x then 1 else 2}
+                        in x |])
+      -- expeced output
+      ,
+      (translateMT(Just [lmt| int |]))
+      )
+      
     ]
   )
 
@@ -277,7 +284,7 @@ main = do
   putStrLn "TESTS"
   runTests 
     [
-       test4,
+       test1,
        test2
     ]
 

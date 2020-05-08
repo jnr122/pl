@@ -233,7 +233,7 @@ pType ∷ CParser TokenBasic Type
 pType = cpNewContext "type" $ mixfix $ concat
   [ mixTerminal $ do cpSyntax "(" ; τ ← pType ; cpSyntax ")" ; return τ
   , mixTerminal $ do cpSyntax "int" ; return IntT
-  , mixTerminal $ do cpSyntax "bool" ; return IntT
+  , mixTerminal $ do cpSyntax "bool" ; return BoolT
   , mixInfix (𝕟64 level_ARROW) $ do cpSyntax "->" ; return FunT
   , mixTerminal $ do
       cpSyntax "class"
