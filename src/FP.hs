@@ -145,16 +145,16 @@ typeCheck env e = case e of
          
   _ -> Nothing
 
-
+{-
 test1 :: Test
 test1 = TestDir
   ( "T1"                 -- e.g., "T1"
   , "identity function"  -- e.g., "interp"
-  , id                   -- the function, e.g., (\ e -> interp e Map.empty Map.empty)
-  , ""           -- the directory where tests live, e.g., "tests/fp/t1"
-  , parseTest LM.pExpr LM.pExpr
+  , (\ e -> interpWithEnv Map.empty (translateE e))  -- the function, e.g., (\ e -> interp e Map.empty Map.empty)
+  , "tests/fp"           -- the directory where tests live, e.g., "tests/fp/t1"
+  , parseTest LM.pExpr LM.pAnswer
   )
-
+-}
 test2 :: Test
 test2 = Test1
   ( "T1"
@@ -177,54 +177,64 @@ test2 = Test1
       -- expeced output
       , translateA([lma| <success> {} , 11 |])
       )
- {-     
+    
     ,
       ( translateE([lme|let tu1 = left 4 in
-let tu2 = right false in
-let r1 = case tu1 {left x => x * x} {right x => if x then 1 else 2} in
-let r2 = case tu2 {left x => x * x} {right x => if x then 1 else 2} in
-r1 + r2 |])
+                       let tu2 = right false in
+                       let r1 = case tu1 {left x => x * x} {right x => if x then 1 else 2} in
+                       let r2 = case tu2 {left x => x * x} {right x => if x then 1 else 2} in
+                       r1 + r2 |])
       -- expeced output
       , translateA([lma| <success> {} , 18 |])
       )
--}
-    {-
+
+    
        ,
-      ( translateE([lme| let tu2 = right false in
-                       let r2 = case tu2 {left x => x * x} {right x => if x then 1 else 2} |])
+      ( translateE([lme| let p =
+                       (
+                         let x = case left 4 {left x => x * x} {right x => if x then 1 else 2}
+                         in x
+                       ,
+                         let y = case right true {left y => y + 3} {right y => if y then 1 else 2}
+                         in y
+                       ) in snd p |])
       -- expeced output
       , translateA([lma| <success> {} , 1 |])
       )
--}
+
 
     ]
   )
 
 
-{-    
+
 test4 :: Test
 test4 = Test1
   ( "T2"
   , "Type Check Tester"
   , typeCheck Map.empty
   , [ -- test input
-      ( translateE([lme| 2 * 1 |])
+      (translateE([lme| 2 * 1 |])
       -- expeced output
-      , translateT([lmt| int |])
+      ,
+      (translateT([lmt| int * bool |]))
       )
     ]
   )
--}
+
 
 main :: IO ()
 main = do
   putStrLn "TESTS"
   runTests 
     [
+       --test1,
        test2
     ]
 
-  putStrLn "EXAMPLE"
+  putStrLn "\n"
+  putStrLn "EX"
+
   putStrLn (show [lme| let p = (1,2) in fst p |])
   putStrLn (show [lmt| int * bool |])
   putStrLn (show [lmv| < fun x => y + 1 , {y = 2} > |])
