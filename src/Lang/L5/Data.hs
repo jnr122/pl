@@ -2,6 +2,21 @@ module Lang.L5.Data where
 
 import Data.Map (Map)
 
+
+-----------
+-- TYPES --
+-----------
+
+data Type =
+    IntT
+  | BoolT
+  | FunT Type Type
+  | PairT Type Type
+  | TUnionT Type Type
+  | StringT
+  deriving (Eq,Ord,Show)
+
+
 -----------------
 -- EXPRESSIONS --
 -----------------
@@ -25,20 +40,6 @@ data Expr =
   | LeftE Expr
   | RightE Expr
   | StringE String
-  deriving (Eq,Ord,Show)
-
-
------------
--- TYPES --
------------
-
-data Type =
-    IntT
-  | BoolT
-  | FunT Type Type
-  | PairT Type Type
-  | TUnionT Type Type
-  | StringT
   deriving (Eq,Ord,Show)
 
 

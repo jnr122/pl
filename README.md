@@ -1,27 +1,20 @@
-# Running Files
+# Goal
 
-    make hw01
-    make hw02
-    ...(etc)
+   The goal of my project was an interpreter and typechecker for a
+   language that implemented pairs and tagged unions
 
-# Running ghcid on Files
+# Starting Point
 
-    make hw01-dev
-    make hw02-dev
-    ...(etc)
+   My starting point was interpWithEnv from hw06 which used L5
 
-# Observing Parser Output
+# How close I got
 
-    make pl1 E="1 + 2"
-    cat <file> | make pl1
+   TODO
 
-    make pl2 E="1 + 2 == 3"
-    cat <file> | make pl2
+# What was harder and easier
 
-# Debugging
+   TODO
 
-If any of these makefile hooks aren't working, try:
+# To run
 
-    stack build
-
-and make sure it completes successfully first.
+   TODO

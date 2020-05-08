@@ -37,7 +37,7 @@ translateE e = case e of
   LM.FstE e -> L5.FstE (translateE e)
   LM.SndE e -> L5.SndE (translateE e)
   LM.CaseE e1 s1 e2 s2 e3-> L5.CaseE (translateE e1) s1 (translateE e2) s2 (translateE e3)
-  LM.LeftE t e -> L5.LeftE (translateE e)
+  LM.LeftE t e -> L5.LeftE  (translateE e)
   LM.RightE t e -> L5.RightE (translateE e)
   LM.StringE s -> L5.StringE s
   _ -> error "not implemented"
@@ -177,17 +177,26 @@ test2 = Test1
       -- expeced output
       , translateA([lma| <success> {} , 11 |])
       )
-      {-
+ {-     
     ,
       ( translateE([lme|let tu1 = left 4 in
 let tu2 = right false in
-let r1 = case tu1 {left x ⇒ x * x} {right x ⇒ if x then 1 else 2} in
-let r2 = case tu2 {left x ⇒ x * x} {right x ⇒ if x then 1 else 2} in
+let r1 = case tu1 {left x => x * x} {right x => if x then 1 else 2} in
+let r2 = case tu2 {left x => x * x} {right x => if x then 1 else 2} in
 r1 + r2 |])
       -- expeced output
       , translateA([lma| <success> {} , 18 |])
       )
 -}
+    {-
+       ,
+      ( translateE([lme| let tu2 = right false in
+                       let r2 = case tu2 {left x => x * x} {right x => if x then 1 else 2} |])
+      -- expeced output
+      , translateA([lma| <success> {} , 1 |])
+      )
+-}
+
     ]
   )
 
@@ -214,5 +223,5 @@ main = do
     [
        test2
     ]
-  putStrLn (show (translateT([lmt| bool + bool |])))
+  putStrLn (show (translateT([lmt| bool + int |])))
 
