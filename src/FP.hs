@@ -283,7 +283,7 @@ test2 = Test1
                         in x |])
       -- expeced output
       ,
-      (translateMT(Just [lmt| int |]))
+      (translateMT(Just [lmt| int + int |]))
       )
       
     ]
