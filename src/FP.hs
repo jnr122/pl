@@ -171,12 +171,11 @@ typeCheck env e = case e of
     _ -> Nothing
 
 
-{-  L5.FunE x e -> L5.ValueEA (L5.CloEV x e env)
--}
+{- 
   L5.FunE x e -> case (typeCheck env x, typeCheck env e) of
     (Just t1, Just t2) -> Just (L5.FunT t1 t2)
     _ -> Nothing
-    
+    -}
   L5.AppE e1 e2  -> Nothing
 
   -- Pairs
@@ -284,7 +283,7 @@ main = do
 
   putStrLn "\n"
   putStrLn "EX"
-  putStrLn (show ((Just [lmt| bool |])))
+  putStrLn (show [lmt| bool |])
   putStrLn (show [lme| let p = (1,2) in fst p |])
   putStrLn (show [lmt| int * bool |])
   putStrLn (show [lmv| < fun x => y + 1 , {y = 2} > |])
