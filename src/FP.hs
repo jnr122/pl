@@ -37,8 +37,8 @@ translateE e = case e of
   LM.FstE e -> L5.FstE (translateE e)
   LM.SndE e -> L5.SndE (translateE e)
   LM.CaseE e1 s1 e2 s2 e3-> L5.CaseE (translateE e1) s1 (translateE e2) s2 (translateE e3)
-  LM.LeftE (t) e -> L5.LeftE (translateT t) (translateE e)
-  LM.RightE (t) e -> L5.RightE (translateT t) (translateE e)
+  LM.LeftE t e -> L5.LeftE (translateE e) (translateMT t)
+  LM.RightE t e -> L5.RightE (translateMT t) (translateE e)
   LM.StringE s -> L5.StringE s
   _ -> error "not implemented"
 
@@ -58,7 +58,6 @@ translateMT :: Maybe LM.Type -> Maybe L5.Type
 translateMT mt = case mt of
   Nothing -> Nothing
   Just t -> Just (translateT t)
-
 
 --Value
 translateV :: LM.Value -> L5.ValueE
@@ -124,10 +123,10 @@ interpWithEnv env e = case e of
     L5.ValueEA (L5.LeftEV v)  -> interpWithEnv (Map.insert x1 v env) e2
     L5.ValueEA (L5.RightEV v) -> interpWithEnv (Map.insert x2 v env) e3
     _ -> L5.BadEA
-  L5.LeftE (Just t) e -> case interpWithEnv env e of
+  L5.LeftE e t -> case interpWithEnv env e of
     L5.ValueEA v -> L5.ValueEA (L5.LeftEV v)
     _ -> L5.BadEA
-  L5.RightE (Just t) e -> case interpWithEnv env e of
+  L5.RightE t e -> case interpWithEnv env e of
     L5.ValueEA v -> L5.ValueEA (L5.RightEV v)
     _ -> L5.BadEA
 
@@ -142,7 +141,6 @@ typeCheck env e = case e of
     (_,_) -> Nothing
   L5.BoolE b -> Just (L5.BoolT)
   L5.StringE x -> (Map.lookup x env)
-  
   L5.IfE b e1 e2 -> case typeCheck env b of
     Just (L5.BoolT) -> case (typeCheck env e1, typeCheck env e2) of
       (Just t1, Just t2) -> if t1 == t2
@@ -150,25 +148,49 @@ typeCheck env e = case e of
                             else Nothing
       _ -> Nothing
     _ -> Nothing
-    
   L5.LetE s e1 e2 -> case typeCheck env e1 of
     Just (t1) -> (typeCheck (Map.insert s t1 env) e2)
     _ -> Nothing
+  L5.VarE x -> case (Map.lookup x env) of
+    Just t -> Just t
+    _ -> Nothing
+    
+  -- Tagged Unions
+  L5.LeftE e (Just t1) -> case typeCheck env e of
+    Just t2 -> Just (L5.TUnionT t1 t2)
+    _ -> Nothing
+  L5.RightE (Just t1) e -> case typeCheck env e of
+    Just t2 -> Just (L5.TUnionT t2 t1)
+    _ -> Nothing
+  L5.CaseE e1 x1 e2 x2 e3 -> case typeCheck env e1 of
+    Just (L5.TUnionT t1 t2) -> case (typeCheck (Map.insert x1 t1 env) e2, typeCheck (Map.insert x2 t2 env) e3) of
+      (Just t1', Just t2') -> if t1' == t2'
+                              then Just t1'
+                              else Nothing
+      _ -> Nothing
+    _ -> Nothing
 
-  
-         
+
+{-  L5.FunE x e -> L5.ValueEA (L5.CloEV x e env)
+-}
+  L5.FunE x e -> case (typeCheck env x, typeCheck env e) of
+    (Just t1, Just t2) -> Just (L5.FunT t1 t2)
+    _ -> Nothing
+    
+  L5.AppE e1 e2  -> Nothing
+
+  -- Pairs
+  L5.FstE e -> case typeCheck env e of
+    Just (L5.PairT t1 t2)-> Just t1
+    _ -> Nothing
+  L5.SndE e -> case typeCheck env e of
+    Just (L5.PairT t1 t2)-> Just t2
+    _ -> Nothing
+  L5.PairE e1 e2 -> case (typeCheck env e1, typeCheck env e2) of
+    (Just t1, Just t2) -> Just (L5.PairT t1 t2)
+    _ -> Nothing
   _ -> Nothing
 
-{-
-test1 :: Test
-test1 = TestDir
-  ( "T1"                 -- e.g., "T1"
-  , "identity function"  -- e.g., "interp"
-  , (\ e -> interpWithEnv Map.empty (translateE e))  -- the function, e.g., (\ e -> interp e Map.empty Map.empty)
-  , "tests/fp"           -- the directory where tests live, e.g., "tests/fp/t1"
-  , parseTest LM.pExpr LM.pAnswer
-  )
--}
 test2 :: Test
 test2 = Test1
   ( "T1"
@@ -233,6 +255,20 @@ test4 = Test1
       ,
       (translateMT(Just [lmt| int |]))
       )
+    ,
+       -- test input
+      (translateE([lme| if true then 1 else 2 |])
+      -- expeced output
+      ,
+      (translateMT(Just [lmt| int |]))
+      )
+    ,
+       -- test input
+      (translateE([lme| let p = (1,2) in snd p |])
+      -- expeced output
+      ,
+      (translateMT(Just [lmt| int |]))
+      )
     ]
   )
 
@@ -248,7 +284,7 @@ main = do
 
   putStrLn "\n"
   putStrLn "EX"
-  putStrLn (show (translateMT(Just [lmt| int * int |])))
+  putStrLn (show ((Just [lmt| bool |])))
   putStrLn (show [lme| let p = (1,2) in fst p |])
   putStrLn (show [lmt| int * bool |])
   putStrLn (show [lmv| < fun x => y + 1 , {y = 2} > |])

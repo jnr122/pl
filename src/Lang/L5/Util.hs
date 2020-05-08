@@ -1,3 +1,4 @@
+
 {-# LANGUAGE 
     ConstraintKinds
    ,DataKinds
@@ -34,8 +35,10 @@
    ,ViewPatterns 
    ,DeriveLift #-}
 
+
 module Lang.L5.Util where
 
+{-
 import UVMHS
 
 import Util.Lex
@@ -142,3 +145,4 @@ l5 ∷ QQ.QuasiQuoter
 l5 = QQ.QuasiQuoter quoteExpr (const $ HS.fail $ chars "quote pattern - I can't even") 
                               (const $ HS.fail $ chars "quote type - I can't even") 
                               (const $ HS.fail $ chars "quote dec - I can't even")
+-}
