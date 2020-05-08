@@ -37,8 +37,8 @@ translateE e = case e of
   LM.FstE e -> L5.FstE (translateE e)
   LM.SndE e -> L5.SndE (translateE e)
   LM.CaseE e1 s1 e2 s2 e3-> L5.CaseE (translateE e1) s1 (translateE e2) s2 (translateE e3)
-  LM.LeftE t e -> L5.LeftE  (translateE e)
-  LM.RightE t e -> L5.RightE (translateE e)
+  LM.LeftE (t) e -> L5.LeftE (translateT t) (translateE e)
+  LM.RightE (t) e -> L5.RightE (translateT t) (translateE e)
   LM.StringE s -> L5.StringE s
   _ -> error "not implemented"
 
@@ -52,6 +52,13 @@ translateT t = case t of
   LM.PairT t1 t2 -> L5.PairT (translateT t1) (translateT t2)
   LM.TUnionT t1 t2 -> L5.TUnionT (translateT t1) (translateT t2)
   _ -> error "not implemented"
+
+-- Maybe Type
+translateMT :: Maybe LM.Type -> Maybe L5.Type
+translateMT mt = case mt of
+  Nothing -> Nothing
+  Just t -> Just (translateT t)
+
 
 --Value
 translateV :: LM.Value -> L5.ValueE
@@ -117,10 +124,10 @@ interpWithEnv env e = case e of
     L5.ValueEA (L5.LeftEV v)  -> interpWithEnv (Map.insert x1 v env) e2
     L5.ValueEA (L5.RightEV v) -> interpWithEnv (Map.insert x2 v env) e3
     _ -> L5.BadEA
-  L5.LeftE e -> case interpWithEnv env e of
+  L5.LeftE (Just t) e -> case interpWithEnv env e of
     L5.ValueEA v -> L5.ValueEA (L5.LeftEV v)
     _ -> L5.BadEA
-  L5.RightE e -> case interpWithEnv env e of
+  L5.RightE (Just t) e -> case interpWithEnv env e of
     L5.ValueEA v -> L5.ValueEA (L5.RightEV v)
     _ -> L5.BadEA
 
@@ -135,13 +142,20 @@ typeCheck env e = case e of
     (_,_) -> Nothing
   L5.BoolE b -> Just (L5.BoolT)
   L5.StringE x -> (Map.lookup x env)
+  
   L5.IfE b e1 e2 -> case typeCheck env b of
-    Just (L5.BoolT) -> Nothing
+    Just (L5.BoolT) -> case (typeCheck env e1, typeCheck env e2) of
+      (Just t1, Just t2) -> if t1 == t2
+                            then Just t1
+                            else Nothing
+      _ -> Nothing
     _ -> Nothing
     
   L5.LetE s e1 e2 -> case typeCheck env e1 of
     Just (t1) -> (typeCheck (Map.insert s t1 env) e2)
     _ -> Nothing
+
+  
          
   _ -> Nothing
 
@@ -214,10 +228,10 @@ test4 = Test1
   , "Type Check Tester"
   , typeCheck Map.empty
   , [ -- test input
-      (translateE([lme| 2 * 1 |])
+      (translateE([lme| 2 |])
       -- expeced output
       ,
-      (translateT([lmt| int * bool |]))
+      (translateMT(Just [lmt| int |]))
       )
     ]
   )
@@ -228,13 +242,13 @@ main = do
   putStrLn "TESTS"
   runTests 
     [
-       --test1,
+       test4,
        test2
     ]
 
   putStrLn "\n"
   putStrLn "EX"
-
+  putStrLn (show (translateMT(Just [lmt| int * int |])))
   putStrLn (show [lme| let p = (1,2) in fst p |])
   putStrLn (show [lmt| int * bool |])
   putStrLn (show [lmv| < fun x => y + 1 , {y = 2} > |])

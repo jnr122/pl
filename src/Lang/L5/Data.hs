@@ -37,8 +37,8 @@ data Expr =
   | FstE Expr
   | SndE Expr
   | CaseE Expr String Expr String Expr
-  | LeftE Expr
-  | RightE Expr
+  | LeftE (Maybe Type) Expr
+  | RightE (Maybe Type) Expr
   | StringE String
   deriving (Eq,Ord,Show)
 
