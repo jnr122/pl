@@ -156,12 +156,13 @@ typeCheck env e = case e of
     _ -> Nothing
     
   -- Tagged Unions
-  L5.LeftE e (Just t1) -> case typeCheck env e of
-    Just t2 -> Just (L5.TUnionT t1 t2)
+  L5.LeftE e (Just t) -> case typeCheck env e of
+    Just t' -> Just (L5.TUnionT (t) t')
     _ -> Nothing
-  L5.RightE (Just t1) e -> case typeCheck env e of
-    Just t2 -> Just (L5.TUnionT t2 t1)
+  L5.RightE (Just t) e -> case typeCheck env e of
+    Just t' -> Just (L5.TUnionT (t') t)
     _ -> Nothing
+    
   L5.CaseE e1 x1 e2 x2 e3 -> case typeCheck env e1 of
     Just (L5.TUnionT t1 t2) -> case (typeCheck (Map.insert x1 t1 env) e2, typeCheck (Map.insert x2 t2 env) e3) of
       (Just t1', Just t2') -> if t1' == t2'
@@ -176,10 +177,10 @@ typeCheck env e = case e of
 
   -- Pairs
   L5.FstE e -> case typeCheck env e of
-    Just (L5.PairT t1 t2)-> Just t1
+    Just (L5.PairT t1 t2) -> Just t1
     _ -> Nothing
   L5.SndE e -> case typeCheck env e of
-    Just (L5.PairT t1 t2)-> Just t2
+    Just (L5.PairT t1 t2) -> Just t2
     _ -> Nothing
   L5.PairE e1 e2 -> case (typeCheck env e1, typeCheck env e2) of
     (Just t1, Just t2) -> Just (L5.PairT t1 t2)
@@ -224,7 +225,7 @@ test1 = Test1
       -- expeced output
       , translateA([lma| <success> {} , 18 |])
       )
-       ,
+    ,
       ( translateE([lme| let p =
                        (
                          let x = case left 4 {left x => x * x} {right x => if x then 1 else 2}
@@ -235,6 +236,16 @@ test1 = Test1
                        ) in snd p |])
       -- expeced output
       , translateA([lma| <success> {} , 1 |])
+      )
+    ,
+      ( translateE([lme|let x = 2 in 
+                        let y = 3 in
+                        let z = (2,3) in
+                        let f = fun x => fun y => x + y in 
+                        f (fst z) (snd z)
+                        |])
+      -- expeced output
+      , translateA([lma| <success> {} , 5 |])
       )
 
 
